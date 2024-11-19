@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 const API_KEY = "GPMzQ8UP_DAO47tCMkEJbAjsqoX1R1lPIoXkyq21Dqdq";
-const SCORING_URL = "https://us-south.ml.cloud.ibm.com/ml/v4/deployments/18fdc1c9-9ab7-4339-aab5-a4ff63105919/predictions?version=2021-05-01";
+const SCORING_URL = "https://private.us-south.ml.cloud.ibm.com/ml/v4/deployments/18fdc1c9-9ab7-4339-aab5-a4ff63105919/predictions?version=2021-05-01";
 
 const IBMPredictionWithInput = () => {
   const [formData, setFormData] = useState({
