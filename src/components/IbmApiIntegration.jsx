@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const API_KEY = "GPMzQ8UP_DAO47tCMkEJbAjsqoX1R1lPIoXkyq21Dqdq";
-const SCORING_URL = "https://private.us-south.ml.cloud.ibm.com/ml/v4/deployments/18fdc1c9-9ab7-4339-aab5-a4ff63105919/predictions?version=2021-05-01";
+const SCORING_URL = "https://us-south.ml.cloud.ibm.com/ml/v4/deployments/18fdc1c9-9ab7-4339-aab5-a4ff63105919/predictions?version=2021-05-01";
+
+// Use CORS Anywhere proxy URL
+const PROXY_URL = "https://cors-anywhere.herokuapp.com/";
 
 const IBMPredictionWithInput = () => {
   const [formData, setFormData] = useState({
@@ -22,37 +25,47 @@ const IBMPredictionWithInput = () => {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
 
+  // Automatically fetch the token on component mount
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const response = await fetch("https://iam.cloud.ibm.com/identity/token", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Accept: "application/json",
+          },
+          body: `grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=${API_KEY}`,
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch token");
+        }
+
+        const data = await response.json();
+        setToken(data.access_token);
+      } catch (err) {
+        setError("Error fetching token: " + err.message);
+      }
+    };
+
+    fetchToken();
+  }, []);
+
   // Update form data based on user input
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Fetch API token
-  const getToken = () => {
-    const req = new XMLHttpRequest();
-    req.open("POST", "https://iam.cloud.ibm.com/identity/token");
-    req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    req.setRequestHeader("Accept", "application/json");
-    req.onload = () => {
-      try {
-        const data = JSON.parse(req.responseText);
-        setToken(data.access_token);
-      } catch (ex) {
-        setError("Error parsing token response");
-      }
-    };
-    req.onerror = () => setError("Error fetching token");
-    req.send("grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=" + API_KEY);  };
-
-  // Make prediction API call
-  const handlePredict = () => {
+  // Make prediction API call through CORS Anywhere proxy
+  const handlePredict = async () => {
     if (!token) {
-      setError("Token is missing. Please fetch the token first.");
+      setError("Token is missing. Please try again later.");
       return;
     }
 
-    const payload = JSON.stringify({
+    const payload = {
       input_data: [
         {
           fields: [
@@ -83,23 +96,28 @@ const IBMPredictionWithInput = () => {
           ]],
         },
       ],
-    });
-
-    const oReq = new XMLHttpRequest();
-    oReq.open("POST", SCORING_URL);
-    oReq.setRequestHeader("Accept", "application/json");
-    oReq.setRequestHeader("Authorization", `Bearer ${token}`);
-    oReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    oReq.onload = () => {
-      try {
-        const data = JSON.parse(oReq.responseText);
-        setResponse(data);
-      } catch (ex) {
-        setError("Error parsing scoring response");
-      }
     };
-    oReq.onerror = () => setError("Error in API call");
-    oReq.send(payload);
+
+    try {
+      const response = await fetch(PROXY_URL + SCORING_URL, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`, // Use the correct token here
+          "Content-Type": "application/json;charset=UTF-8",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error("Prediction API call failed");
+      }
+
+      const data = await response.json();
+      setResponse(data);
+    } catch (err) {
+      setError("Error making prediction: " + err.message);
+    }
   };
 
   return (
@@ -122,7 +140,6 @@ const IBMPredictionWithInput = () => {
         ))}
       </div>
 
-      <button onClick={getToken}>Get Token</button>
       <button onClick={handlePredict} disabled={!token}>
         Predict
       </button>
