@@ -13,10 +13,7 @@ import user5 from "../assets/profile-pictures/user5.jpg";
 import user6 from "../assets/profile-pictures/user6.jpg";
 
 export const navItems = [
-  { label: "Features", href: "#" },
-  { label: "Workflow", href: "#" },
-  { label: "Pricing", href: "#" },
-  { label: "Testimonials", href: "#" },
+  { label: " ", href: "#" },
 ];
 
 export const testimonials = [
@@ -61,40 +58,23 @@ export const testimonials = [
 export const features = [
   {
     icon: <BotMessageSquare />,
-    text: "Drag-and-Drop Interface",
+    text: "Instant Mental Health Screening",
     description:
-      "Easily design and arrange your VR environments with a user-friendly drag-and-drop interface.",
+      "Get instant feedback on your mental health status with our AI-powered mental health screening tool.",
   },
   {
     icon: <Fingerprint />,
-    text: "Multi-Platform Compatibility",
+    text: "Confidential and Secure",
     description:
-      "Build VR applications that run seamlessly across multiple platforms, including mobile, desktop, and VR headsets.",
+      "Rest assured that your data is safe and secure with our state-of-the-art encryption and security protocols.",
   },
   {
     icon: <ShieldHalf />,
-    text: "Built-in Templates",
+    text: "Expert Guidance",
     description:
-      "Jumpstart your VR projects with a variety of built-in templates for different types of applications and environments.",
+      "Receive expert guidance and recommendations based on your mental health screening results to help you improve your mental well-being.",
   },
-  {
-    icon: <BatteryCharging />,
-    text: "Real-Time Preview",
-    description:
-      "Preview your VR application in real-time as you make changes, allowing for quick iterations and adjustments.",
-  },
-  {
-    icon: <PlugZap />,
-    text: "Collaboration Tools",
-    description:
-      "Work together with your team in real-time on VR projects, enabling seamless collaboration and idea sharing.",
-  },
-  {
-    icon: <GlobeLock />,
-    text: "Analytics Dashboard",
-    description:
-      "Gain valuable insights into user interactions and behavior within your VR applications with an integrated analytics dashboard.",
-  },
+  
 ];
 
 export const checklistItems = [
@@ -126,8 +106,7 @@ export const pricingOptions = [
     price: "$0",
     features: [
       "Private board sharing",
-      "5 Gb Storage",
-      "Web Analytics",
+      "Analytics",
       "Private Mode",
     ],
   },
@@ -136,8 +115,7 @@ export const pricingOptions = [
     price: "$10",
     features: [
       "Private board sharing",
-      "10 Gb Storage",
-      "Web Analytics (Advance)",
+      "Analytics (Advance)",
       "Private Mode",
     ],
   },
@@ -146,8 +124,7 @@ export const pricingOptions = [
     price: "$200",
     features: [
       "Private board sharing",
-      "Unlimited Storage",
-      "High Performance Network",
+      "High Performance",
       "Private Mode",
     ],
   },
